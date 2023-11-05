@@ -6,3 +6,9 @@ class WorkoutSchema(ModelSchema):
     class Config:
         model = Workout
         model_fields = '__all__'
+
+class NotFoundSchema(Schema):
+    message: str
+
+class ErrorSchema(Schema):
+    message: str

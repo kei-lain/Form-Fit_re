@@ -8,14 +8,5 @@ from authentication.models import Person
 from .models import Workout
 from .formfit import creatWorkouts
 
-class WorkoutCreation(APIView):
-   def get(self, request, format=None):
-        person = Person.objects.all()
-        work
-
-
-
-
-
 
 

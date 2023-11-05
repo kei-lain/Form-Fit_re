@@ -41,4 +41,26 @@ class UpdatePersonSerializer(serializers.ModelSerializer):
         instance = super().update(instance, validated_data)
         super(UpdatePersonSerializer.self).update()
         return instance
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(style={'input_type': 'password'}, trim_whitespace=False)
     
+    def validate(self, atrrs):
+        email = attrs.get('email').lower()
+        password = attrs.get('password')
+
+        if not email or not password:
+            raise serializers.ValidationError("Please give both email and password.")
+
+        if not Person.objects.filter(email=email).exists():
+            raise serializers.ValidationError('Email does not exist.')
+
+        user = authenticate(request=self.context.get('request'), email=email,
+                            password=password)
+        if not user:
+            raise serializers.ValidationError("Wrong Credentials.")
+
+        attrs['user'] = user
+        return attrs
