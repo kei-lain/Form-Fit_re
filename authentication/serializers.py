@@ -26,7 +26,7 @@ class CreatePersonSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        person = Person.objects.create_person(**validated_data)
+        person = Person.objects.create(**validated_data)
         return person
 
 class UpdatePersonSerializer(serializers.ModelSerializer):

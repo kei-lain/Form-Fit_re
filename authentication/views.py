@@ -3,7 +3,7 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from knox import views as knox_views
-from django.contrib.auth.models import login
+from django.contrib.auth import login
 
 from .models import Person
 from .serializers import *

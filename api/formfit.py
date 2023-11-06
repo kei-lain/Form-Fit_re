@@ -25,11 +25,11 @@ def creatWorkouts(goal):
     areas = response["choices"][0]["message"]["content"]
 
     
-    print(areas)
+    
     for area in areas.split(", "):
         area.strip()
         area = str(area)
-        print(area)
+        
         
 
         recommendation =  matchWorkouts(area)
@@ -42,50 +42,36 @@ def creatWorkouts(goal):
 
 
 def matchWorkouts(area):
-    #url =  "https://exercisedb.p.rapidapi.com/target/"
-    # orig_url = url
     querystring = {"limit":"10"}
-
-   
-    # for area in areas:
     excersises = {}
     if area.__contains__("  "):
-        area.replace("  ", "%20")
-        print(area)
+        area = area.replace("  ", "%20")
+       
     elif area.__contains__("."):
-        area.split(".")
-        print(area)
+        area = area.replace(".","")
+        
+    else:
+        pass
     area = area.lower()
-    new_url = (f"https://exercisedb.p.rapidapi.com/exercises/target/{area}")
+
+
+    new_url = (f'https://exercisedb.p.rapidapi.com/exercises/target/{area}')
+   
     headers = {"X-RapidAPI-Key": RapidAPI_Key, "X-RapidAPI-Host": RapidAPI_Host}
     response = requests.get(new_url, headers=headers, params=querystring)
 
     compList = response.json()
-    print(compList)
+    
     for excersise in compList:
-        print(excersise)
-        # excersises[(part['name'])] = {excersise}
-        # # print(excersises[(part['name'])])
+       
         name = excersise['name']
         excersises[name] = excersise
-        print((f"{name}----{excersise}"))
-        print(f"{name} is added to the collection of excersises")
-        print("-------------------------------")
+       
     return(excersises)
         
 
 
-        
-
-
-
-if __name__ == '__main__':
-  
-    goal = "I want to tone my arms"
-    creatWorkouts(goal)
     
-
-
 
     
 
