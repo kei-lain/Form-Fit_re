@@ -53,6 +53,7 @@ def matchWorkouts(area):
     else:
         pass
     area = area.lower()
+    print(area)
 
 
     new_url = (f'https://exercisedb.p.rapidapi.com/exercises/target/{area}')

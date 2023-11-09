@@ -2,14 +2,21 @@ from ninja import NinjaAPI
 from ninja.responses import codes_2xx
 import asyncio 
 import pydantic
+from pydantic import EmailStr
 from asgiref.sync import sync_to_async
 from .formfit import creatWorkouts
 from .schema import WorkoutSchema , ErrorSchema, NotFoundSchema
 from django.shortcuts import get_object_or_404
 from authentication.models import Person
+from django.core.exceptions import ValidationError
+from ninja.errors import ValidationError as NinjaValidationError
 from .models import Workout
 
 api = NinjaAPI()
+
+# @api.exception_handler(ValidationError)
+# async def validation_error_exception_handler(request):
+#     pass
 
 @api.get("/excersise/workout/{workout_id}", response={200: WorkoutSchema, 404: NotFoundSchema})
 async def getWorkouts(self, request, workout_id: int):
@@ -36,13 +43,26 @@ async def makeWorkouts(request, person_id: int):
                 bodyPart = target_recommendation[target]['bodyPart']
                 equipment = target_recommendation[target]['equipment']
                 instructions = target_recommendation[target]['instructions']
+                if instructions is str:
+                    instructions = instructions
+                else:
+                    instructions = ("had trouble retrieving instructions")
                 target_area = target_recommendation[target]['target']
-            
                 new_workout = await sync_to_async(Workout.objects.create)(person=person_obj,workout=target,equipment=equipment,instructions=instructions, targetArea=target_area, bodypart=bodyPart)
-            except pydantic.ValidationError as e:
+            except NinjaValidationError as e:
                 pass
             except ValidationError as e:
                 pass
+            except ValidationError as e:
+                pass
+                
+            except ConfigError as e:
+                pass
+                
+
+            except pydantic.ValidationError as e:
+                pass
+            
     return 201, new_workout
 
 

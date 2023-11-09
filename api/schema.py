@@ -1,17 +1,19 @@
 from ninja import Schema, ModelSchema
-from pydantic import validator, BaseModel
+from pydantic import validator, BaseModel, EmailStr
+from pydantic.schema import Optional
+import asyncio 
 from .models import Workout
 from authentication.models import Person
+from authentication.models import Person
+from django.core.exceptions import ValidationError
+from ninja.errors import ValidationError as NinjaValidationError
 
-class WorkoutSchema(Schema):
-    person:  str
-    workout: str
-    targetArea: str
-    equipment: str
-    bodypart: str
+class WorkoutSchema(ModelSchema):
+    class Config:
+        model = Workout
+        model_fields = '__all__'
 
     
-    # @validator(person)
 
 class NotFoundSchema(Schema):
     msg: str
