@@ -4,8 +4,8 @@ import asyncio
 import pydantic
 from pydantic import EmailStr
 from asgiref.sync import sync_to_async
-from .formfit import creatWorkouts
-from .schema import WorkoutSchema , ErrorSchema, NotFoundSchema
+from .formfit import creatWorkouts, createPlan
+from .schema import WorkoutSchema, PlanSchema , ErrorSchema, NotFoundSchema
 from django.shortcuts import get_object_or_404
 from authentication.models import Person
 from django.core.exceptions import ValidationError
@@ -19,9 +19,9 @@ api = NinjaAPI()
 #     pass
 
 @api.get("/excersise/workout/{workout_id}", response={200: WorkoutSchema, 404: NotFoundSchema})
-async def getWorkouts(self, request, workout_id: int):
+async def getWorkouts(request, workout_id: int):
     try:
-        workout = Workout.object.get(pk=workout_id)
+        workout = Workout.objects.get(pk=workout_id)
         return 200, workout
     except:
         message = 'workout with that id not found'
@@ -65,6 +65,18 @@ async def makeWorkouts(request, person_id: int):
             
     return 201, new_workout
 
+@sync_to_async
+def get_workouts(person_id):
+    return list(Workout.objects.filter(person=person_id))
+
+@api.api_operation(["GET","POST"], "excersise/make_plan/{person_id}", response={codes_2xx: PlanSchema, 500: ErrorSchema})
+async def makeWorkoutPlans(request, person_id: int, numDays: int):
+    person = Person.objects.filter(pk=person_id)
+    person_obj = await sync_to_async(get_object_or_404)(Person, pk=person_id)
+    workouts = await get_workouts(person_id)
+    plans = createPlan(workouts, numDays)
+    print(plans)
+    
 
 
 

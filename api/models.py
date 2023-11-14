@@ -8,3 +8,15 @@ class Workout(models.Model):
     equipment = models.TextField()
     bodypart = models.TextField()
     instructions = models.TextField()
+
+    def __str__(self):
+        return self.workout
+    
+
+class Workout_Plan(models.Model):
+    planName = models.TextField()
+    workouts = models.ManyToManyField(Workout)
+
+    def __str__(self):
+        return self.planName
+    
